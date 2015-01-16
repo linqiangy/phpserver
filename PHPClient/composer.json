@@ -1,0 +1,17 @@
+{"name":"PHPClient",
+    "type":"Library",
+    "description":"Jumei PHP Rpc 客户端 ",
+    "config":{"vendor-dir": "Vendor"},
+    "repositories":[{"packagist":false},
+        {"type": "composer",
+            "url": "https://packagist.int.jumei.com/"
+        }
+    ],
+    "require":{
+        "MNLogger":"0.4.0"
+    },
+    "require-dev":{
+        "Bootstrap":">=1.0.0"
+    }
+
+}

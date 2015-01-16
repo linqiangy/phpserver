@@ -1,0 +1,14 @@
+data/Test/Config/PHPClient.php.i
+data/Text.php.i
+data/examples/controllers/Test.php.i
+data/examples/controllers/Query.php.i
+data/.hgtags.i
+data/README.i
+data/JMTextRpcClient.php.i
+data/.hgignore.i
+data/examples/config/PHPClient.php.i
+data/examples/config/debug.php.i
+data/Test/testPHPClient.php.i
+data/Test/common.php.i
+data/JMRpcClient.php.i
+data/composer.json.i
