@@ -15,18 +15,18 @@
 2014-06-06 Thrift支持Thrift、文本Text双协议
 服务端开发示例
 ===================
-见[PHP Service 开发实例](http://wiki.int.jumei.com/index.php?title=PHP_Service_%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B)
+见[PHP Service 开发实例](http://wiki.int.seanxyh.com/index.php?title=PHP_Service_%E5%BC%80%E5%8F%91%E5%AE%9E%E4%BE%8B)
 1) PHPServer简介v1.1
 ===========================
 __PHPServer 用PHP写的server框架，支持libevent、libev、libuv等事件轮询库，支持多进程、支持Inotify文件监控及自动更新、支持server平滑重启、支持PHP文件语法检查等特性。目前实现了http协议和fastcgi协议，可替代nginx+php-fpm，性能比较强悍。.__
 2) 代码库
 =================================
 ####_此处代码库基于mercurial_####
-+ 申请项目代码库权限.项目代码管理[https://hg.int.jumei.com](https://hg.int.jumei.com)
-+ 代码库详细配置和操作参考[https://echo.int.jumei.com/projects/panda/wiki/代码库](https://echo.int.jumei.com/projects/panda/wiki/代码库)
++ 申请项目代码库权限.项目代码管理[https://hg.int.seanxyh.com](https://hg.int.seanxyh.com)
++ 代码库详细配置和操作参考[https://echo.int.seanxyh.com/projects/panda/wiki/代码库](https://echo.int.seanxyh.com/projects/panda/wiki/代码库)
 + 获取您的service代码库
-`hg clone https://hg.int.jumei.com/Commons/PHPServer_Group/PHPServer` PHPServer1.0
-`hg clone https://hg.int.jumei.com/Arch_Groups/RPC-PHP/parrot-phpserver` PHPServer2.0
+`hg clone https://hg.int.seanxyh.com/Commons/PHPServer_Group/PHPServer` PHPServer1.0
+`hg clone https://hg.int.seanxyh.com/Arch_Groups/RPC-PHP/parrot-phpserver` PHPServer2.0
 3) 目录结构
 =======
 PHPServer-+
@@ -77,7 +77,7 @@ config/main.php
 return array(
 'workers' => array(
 // 聚美通用 Worker
-'JumeiWorker' => array(
+'seanxyhWorker' => array(
 'protocol' => 'tcp', // [必填]tcp udp
 'port' => 2201, // [必填]监听的端口
 'child_count' => 10, // [必填]worker进程数 注意:每个进程大概占用30M内存，总worker数量不要超过800个
@@ -190,10 +190,10 @@ ob_start();
 //解析http协议
 $data = Http::decode($recv_str);
 //更改工作目录
-chdir('your_jumei_webservice_dir/');
+chdir('your_seanxyh_webservice_dir/');
 try{
 //载入webservice入口文件rpc.php
-include 'your_jumei_webservice_dir/rpc.php';
+include 'your_seanxyh_webservice_dir/rpc.php';
 }
 catch (Exception $e)
 {
@@ -206,11 +206,11 @@ $ret = $this->sendToClient(Http::encode(ob_get_clean()));
 }
 }
 </pre>
-your_jumei_webservice_dir/rpc.php
+your_seanxyh_webservice_dir/rpc.php
 <pre>
 &lt;?php
-require_once '/your_jumei_webservice_dir/RpcJumeiServer.php';
-$rpcServer = new RpcJumeiServer();
+require_once '/your_seanxyh_webservice_dir/RpcseanxyhServer.php';
+$rpcServer = new RpcseanxyhServer();
 $rpcServer->run();
 </pre>
 - 增加配置项
@@ -309,7 +309,7 @@ start time:2013-09-16 15:16:05 run 0 days 0 hours
 load average: 4.44, 4.71, 4.44
 1 users 6 workers 12 processes
 worker_name exit_status exit_count
-JumeiWorker 0 0
+seanxyhWorker 0 0
 StatisticWorker 0 0
 StatisticService 0 0
 TaskWorker 0 0
@@ -317,17 +317,17 @@ TestClientWorker 0 0
 EchoWorker 0 0
 ---------------------------------------PROCESS STATUS-------------------------------------------
 pid memory proto port timestamp worker_name total_request recv_timeout proc_timeout packet_err thunder_herd client_close send_fail throw_exception suc/total
-8866 1.5M tcp 2201 1379315765 JumeiWorker 0 0 0 0 0 0 0 0 100%
-8871 1.5M tcp 2201 1379315765 JumeiWorker 0 0 0 0 0 0 0 0 100%
+8866 1.5M tcp 2201 1379315765 seanxyhWorker 0 0 0 0 0 0 0 0 100%
+8871 1.5M tcp 2201 1379315765 seanxyhWorker 0 0 0 0 0 0 0 0 100%
 8874 1.75M tcp 20202 1379315765 StatisticService 0 0 0 0 0 0 0 0 100%
-8867 1.5M tcp 2201 1379315765 JumeiWorker 0 0 0 0 0 0 0 0 100%
+8867 1.5M tcp 2201 1379315765 seanxyhWorker 0 0 0 0 0 0 0 0 100%
 8882 1.5M tcp 20304 1379315765 EchoWorker 0 0 0 0 0 0 0 0 100%
 8883 1.5M tcp 20304 1379315765 EchoWorker 0 0 0 0 0 0 0 0 100%
 8884 1.5M tcp 20304 1379315765 EchoWorker 0 0 0 0 0 0 0 0 100%
 8873 1.75M udp 2207 1379315765 StatisticWorker 4212486 0 0 0 0 0 0 0 100%
 8876 1.75M udp 10203 1379315765 TaskWorker 28 0 0 0 0 0 0 0 100%
 8881 1.5M tcp 20304 1379315765 EchoWorker 0 0 0 0 0 0 0 0 100%
-8869 1.5M tcp 2201 1379315765 JumeiWorker 0 0 0 0 0 0 0 0 100%
+8869 1.5M tcp 2201 1379315765 seanxyhWorker 0 0 0 0 0 0 0 0 100%
 8877 1.5M tcp 30303 1379315765 TestClientWorker 0 0 0 0 0 0 0 0 100%
 </pre>
 - status命令说明
@@ -435,11 +435,11 @@ cpu：Intel® Core™ i3-3220 CPU @ 3.30GHz × 4
 ###创建demo相关目录
 `sudo mkdir /home/demo && sudo chmod 777 /home/demo && mkdir demo/service_demo && mkdir demo/client_demo && cd /home/demo`
 ###下载及配置及启动parrot-phpserver
-`hg clone https://hg.int.jumei.com/WS_Group/Vendor/Vendor`
+`hg clone https://hg.int.seanxyh.com/WS_Group/Vendor/Vendor`
 `cp Vendor/PHPServer/config/main.example.php Vendor/PHPServer/config/main.php`
 `sudo ./Vendor/PHPServer/bin/serverd start`
 ###建立IDL文件
-打开<http://thrift.int.jumei.com/>，点击在线创建
+打开<http://thrift.int.seanxyh.com/>，点击在线创建
 创建 User.thrift 文件如下
 namespace php Provider.User
 service User
@@ -600,7 +600,7 @@ demo
 └── thrifts
 └── HelloWorlds.thrift
 </pre>
-###安装Thrfit(建议使用thrift.int.jumeicd.com，不用安装Thrift)
+###安装Thrfit(建议使用thrift.int.seanxyhcd.com，不用安装Thrift)
 `sudo apt-get install libboost-dev automake libtool flex bison pkg-config g++ make libssl-dev`
 `mkdir /home/demo/thrift_source_code && cd /home/demo/thrift_source_code`
 `wget http://www.eu.apache.org/dist/thrift/0.9.1/thrift-0.9.1.tar.gz`
