@@ -1,0 +1,53 @@
+#!/usr/bin/env php
+<?php
+
+$exename = array_shift($argv);
+
+if (empty($argv)) {
+    echo <<< END
+Usage:
+        {$exename} <worker name>
+
+END;
+    exit;
+}
+
+$worker_name = array_shift($argv);
+
+$worker_filename = __dir__ . '/../workers/' . $worker_name . '.php';
+if (!file_exists($worker_filename)) {
+    $worker_filename = __dir__ . '/../workers/' . $worker_name . 'Worker.php';
+    if (!file_exists($worker_filename)) {
+        exit('Worker "' . $worker_name . '" does not exsits' . PHP_EOL);
+    }
+    $worker_name .= 'Worker';
+}
+
+require __dir__ . '/../core/PHPServer.php';
+require $worker_filename;
+
+$port = PHPServerConfig::get('workers.' . $worker_name . '.port');
+$recv_timeout = PHPServerConfig::get('workers.' . $worker_name . '.recv_timeout');
+$recv_timeout = (int)$recv_timeout >= 0 ? (int)$recv_timeout : PHPServer::WORKER_DEFAULT_RECV_TIMEOUT;
+$process_timeout = PHPServerConfig::get('workers.' . $worker_name . '.process_timeout');
+$process_timeout = (int)$process_timeout > 0 ? (int)$process_timeout : PHPServer::WORKER_DEFAULT_PROCESS_TIMEOUT;
+$send_timeout = PHPServerConfig::get('workers.' . $worker_name . '.send_timeout');
+$send_timeout = (int)$send_timeout > 0 ? (int)$send_timeout : PHPServer::WORKER_DEFAULT_SEND_TIMEOUT;
+// 是否开启长连接
+$persistent_connection = (bool)PHPServerConfig::get('workers.' . $worker_name . '.persistent_connection');
+
+$listen_address = 'tcp://0.0.0.0:' . $port;
+$socket = stream_socket_server($listen_address, $error_no, $error_msg, STREAM_SERVER_BIND | STREAM_SERVER_LISTEN);
+$mock_channels = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
+
+$worker = new $worker_name($socket, $recv_timeout, $process_timeout, $send_timeout, $persistent_connection);
+$worker->setChannel($mock_channels[0]);
+$worker->setEventLoopName('Select');
+
+if (method_exists($worker, 'handleFatalErrors')) {
+    register_shutdown_function(array($worker, 'handleFatalErrors'));
+}
+
+echo 'Worker "' . $worker_name . '" listening on ' . $listen_address, PHP_EOL;
+
+$worker->serve(false);

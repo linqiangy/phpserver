@@ -1,0 +1,13 @@
+{"name": "PHPServer",
+ "description": "PHPServer",
+ "authors": [{"name":"liangl3", "email": "liangl3@jumei.com", "homepage": "http://wiki.int.jumei.com", "role": "STM"}], 
+ "type":"library",
+ "config":{"vendor-dir": "Vendor"}
+ ,
+ "repositories":[{"packagist":false},
+ 		 {"type": "composer",
+		  "url": "http://packagist.int.jumei.com/"
+		  }
+ ]
+}
+
